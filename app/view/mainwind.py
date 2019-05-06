@@ -1,32 +1,56 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QPushButton, QFormLayout, QGridLayout, \
-    QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QLineEdit, QPushButton, QGridLayout, \
+    QDesktopWidget, QComboBox
+from app.models import Matrix
 
 
 class MainWindow(QWidget):
 
-
     def __init__(self):
         super().__init__()
+        self.main_layout = QHBoxLayout()
+        self.first_grid = QGridLayout()
+        self.second_grid = QGridLayout()
+        self.chose_sign, self.chose_size = QComboBox(), QComboBox()
+        self.firstField, self.secondField = {}, {}
+        self.size = 0
         self.initUI()
 
     def initUI(self):
-        self.grid = QGridLayout()
-        self.fieldsdict = {}
-
-        position = [(i, j) for i in range(2) for j in range(2)]
-        for i, pos in zip(range(4), position):
-            line = QLineEdit()
-            self.fieldsdict[i] = line
-            self.grid.addWidget(line, *pos)
-
         btn = QPushButton("Get value")
-        self.grid.addWidget(btn, 2, 0)
-        btn.clicked.connect(self.btnClicked)
 
-        self.resize(300, 250)
+        self.chose_size.addItems(['2','3','4'])
+        self.chose_sign.addItems(['+','-','*'])
+        self.onActivated(2)
+        self.chose_size.activated[str].connect(self.onActivated)
+        self.main_layout.addWidget(self.chose_size)
+
+        self.main_layout.addLayout(self.first_grid)
+        self.main_layout.addWidget(self.chose_sign)
+        self.main_layout.addLayout(self.second_grid)
+        self.main_layout.addWidget(btn)
+
+
+        btn.clicked.connect(self.btnClicked)
         self.moveCenter()
-        self.setLayout(self.grid)
+        self.setLayout(self.main_layout)
+
+    def onActivated(self, size):
+        self.size = int(size)
+        self.firstField.clear()
+        self.createTable(self.first_grid, self.firstField)
+        self.createTable(self.second_grid, self.secondField)
+
+    def createTable(self, grid, fields):
+        if grid.count() > 0:
+            for i in reversed(range(grid.count())):
+                grid.itemAt(i).widget().setParent(None)
+        position = [(i, j) for i in range(self.size) for j in range(self.size)]
+        for i, pos in zip(range(self.size*self.size), position):
+            line = QLineEdit()
+            line.setFixedSize(50, 35)
+            fields[i] = line
+            grid.addWidget(line, *pos)
 
     def moveCenter(self):
         geom = self.frameGeometry()
@@ -34,24 +58,31 @@ class MainWindow(QWidget):
         geom.moveCenter(cnt)
         self.move(geom.topLeft())
 
-    def btnClicked(self):
-        self.dlst = []
-        tmp = []
-        for i in range(len(self.fieldsdict)):
-            value = self.fieldsdict[i].text()
+    def getMatrix(self, grid):
+        matrix, tmp = [], []
+        for i in range(len(grid)):
+            value = grid[i].text()
             tmp.append(int(value))
-            if len(tmp) == 2:
-                self.dlst.append(tmp)
+            if len(tmp) == self.size:
+                matrix.append(tmp)
                 tmp = []
-        print(self.dlst)
+        return Matrix(value=matrix)
+
+    def btnClicked(self):
+        m1 = self.getMatrix(self.firstField)
+        m2 = self.getMatrix(self.secondField)
+        sign = self.chose_sign.currentText()
+        print(sign)
+        if sign == '+':
+            print(m1+m2)
+        elif sign == '*':
+            print(m1*m2)
+        else:
+            print(m1-m2)
 
 
-def main():
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()

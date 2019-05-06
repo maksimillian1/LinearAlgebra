@@ -46,6 +46,13 @@ class Matrix:
             res.append(tmp)
         return Matrix(value=res)
 
+    def __sub__(self, other):
+        res = []
+        for i in range(len(self)):
+            tmp = [slf - oth for slf, oth in zip(self[i], other[i])]
+            res.append(tmp)
+        return Matrix(value=res)
+
     def __mul__(self, other):
         if not isinstance(other, Matrix):
             raise TypeError
