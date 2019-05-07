@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QLineEdit, QPush
 from app.models import Matrix
 
 
-class MainWindow(QWidget):
+class MatrixWindow(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -83,6 +83,6 @@ class MainWindow(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MainWindow()
+    ex = ()
     ex.show()
     sys.exit(app.exec_())

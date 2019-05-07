@@ -1,5 +1,5 @@
 from app.exceptions import MatrixSizeError
-
+import numpy
 
 class Matrix:
 
@@ -16,10 +16,10 @@ class Matrix:
         return [i for lst in self.__matrix for i in lst]
 
     def __repr__(self):
-        lst = ""
-        for i in range(len(self)):
-            lst += "{}\n".format(self.__matrix[i])
-        return lst
+        # lst = ""
+        # for i in range(len(self)):
+        #     lst += "{}\n".format(self.__matrix[i])
+        return str(self.__matrix)
 
     def __getitem__(self, item):
         if isinstance(item, int):
@@ -76,3 +76,32 @@ class Matrix:
     def transpose(self):
         transposed = [[lst[i] for lst in self.__matrix] for i in range(len(self))]
         return Matrix(value=transposed)
+
+    @staticmethod
+    def getDet(mat):
+        if len(mat) < 3:
+            det = (mat[0][0] * mat[1][1]) \
+                  - (mat[0][1] * mat[1][0])
+            return det
+        else:
+            res, sign = 0, '+'
+            for index in range(len(mat)):
+                if sign == '+':
+                    res += mat[0][index] * Matrix.getDet(Matrix.getMinor(mat, index))
+                    sign = '-'
+                else:
+                    res += -(mat[0][index] * Matrix.getDet(Matrix.getMinor(mat, index)))
+                    sign = '+'
+        return res
+
+    @staticmethod
+    def getMinor(mat, index):
+        minor = []
+        for i in range(1, len(mat)):
+            lst = []
+            for j in range(len(mat)):
+                if j != index:
+                    lst.append(mat[i][j])
+            minor.append(lst)
+        return minor
+
