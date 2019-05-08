@@ -1,7 +1,7 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QLineEdit, QPushButton, QGridLayout, \
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QPushButton, QGridLayout, \
     QDesktopWidget, QComboBox
 from app.models import Matrix
+from app.view.QtFeatures import moveCenter
 
 
 class MatrixWindow(QWidget):
@@ -30,9 +30,8 @@ class MatrixWindow(QWidget):
         self.main_layout.addLayout(self.second_grid)
         self.main_layout.addWidget(btn)
 
-
         btn.clicked.connect(self.btnClicked)
-        self.moveCenter()
+        moveCenter(self)
         self.setLayout(self.main_layout)
 
     def onActivated(self, size):
@@ -51,12 +50,6 @@ class MatrixWindow(QWidget):
             line.setFixedSize(50, 35)
             fields[i] = line
             grid.addWidget(line, *pos)
-
-    def moveCenter(self):
-        geom = self.frameGeometry()
-        cnt = QDesktopWidget().availableGeometry().center()
-        geom.moveCenter(cnt)
-        self.move(geom.topLeft())
 
     def getMatrix(self, grid):
         matrix, tmp = [], []
@@ -79,10 +72,3 @@ class MatrixWindow(QWidget):
             print(m1*m2)
         else:
             print(m1-m2)
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = ()
-    ex.show()
-    sys.exit(app.exec_())

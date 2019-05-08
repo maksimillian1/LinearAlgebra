@@ -6,21 +6,44 @@ from random import randint
 
 class MatrixTest(unittest.TestCase):
 
-    def testmatrixAdd(self):
+    def MatrixAdd(self):
         lst = MatrixTest.getRandMatrix()
-        print(lst)
         mat = Matrix(value=lst)
         nmat = matrix(lst)
-        self.assertEqual(mat+mat.__Matrix_matrix, nmat+nmat)
+        self.assertEqual((mat+mat).toList(), (nmat+nmat).tolist())
+
+    def testAdd100Times(self):
+        for i in range(100):
+            self.MatrixAdd()
+
+    def MatrixSub(self):
+        lst = MatrixTest.getRandMatrix()
+        mat = Matrix(value=lst)
+        nmat = matrix(lst)
+        self.assertEqual((mat - mat).toList(), (nmat - nmat).tolist())
+
+    def testSub100Times(self):
+        for i in range(100):
+            self.MatrixSub()
+
+    def MatrixMul(self):
+        lst = MatrixTest.getRandMatrix()
+        mat = Matrix(value=lst)
+        nmat = matrix(lst)
+        self.assertEqual((mat * mat).toList(), (nmat * nmat).tolist())
+
+    def testMul10Times(self):
+        for i in range(100):
+            self.MatrixMul()
 
     @staticmethod
     def getRandMatrix():
         mat = []
-        randSize = randint(0,10)
+        randSize = randint(1,1000)
         for i in range(randSize):
             tmp = []
             for i in range(randSize):
-                tmp.append(randint(0,1000))
+                tmp.append(randint(1,1000))
             mat.append(tmp)
         return mat
 

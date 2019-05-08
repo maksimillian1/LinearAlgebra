@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget, QDesktopWidget, QButtonGroup
 from app.view.matrix_window import MatrixWindow
+from app.view.QtFeatures import moveCenter
+
 
 class MainWindow(QWidget):
 
@@ -28,13 +30,8 @@ class MainWindow(QWidget):
         self.setMaximumSize(*self.defaultSize)
         self.setLayout(self.vbox)
         self.setWindowTitle("Linear Algebra")
-        self.moveCenter()
+        moveCenter(self)
 
-    def moveCenter(self):
-        geom = self.frameGeometry()
-        cnt = QDesktopWidget().availableGeometry().center()
-        geom.moveCenter(cnt)
-        self.move(geom.topLeft())
 
     def buttonsClicked(self, id):
         print(id)

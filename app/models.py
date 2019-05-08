@@ -1,13 +1,11 @@
 from app.exceptions import MatrixSizeError
-import numpy
+from copy import copy
+
 
 class Matrix:
 
-    def __init__(self, size=None, value=None):
-        if value is not None:
-            self.__matrix = value
-        else:
-            self.__matrix = [[0 for _ in range(size)] for _ in range(size)]
+    def __init__(self, value):
+        self.__matrix = tuple(value)
 
     def __len__(self):
         return len(self.__matrix)
@@ -15,11 +13,17 @@ class Matrix:
     def __iter__(self):
         return [i for lst in self.__matrix for i in lst]
 
+    def toList(self):
+        lst = []
+        for i in self.__matrix:
+            lst.append(list(i))
+        return lst
+
     def __repr__(self):
-        # lst = ""
-        # for i in range(len(self)):
-        #     lst += "{}\n".format(self.__matrix[i])
-        return str(self.__matrix)
+        lst = ""
+        for i in range(len(self)):
+            lst += "{}\n".format(self.__matrix[i])
+        return lst
 
     def __getitem__(self, item):
         if isinstance(item, int):
@@ -27,15 +31,6 @@ class Matrix:
         elif isinstance(item, list):
             if len(item) == 2:
                 return self.__matrix[item[0]][item[1]]
-        else:
-            raise ValueError
-
-    def __setitem__(self, item, value):
-        if isinstance(item, int):
-            self.__matrix[item] = list(value)
-        elif isinstance(item, tuple):
-            if len(item) == 2:
-                self.__matrix[item[0]][item[1]] = value
         else:
             raise ValueError
 
@@ -56,7 +51,7 @@ class Matrix:
     def __mul__(self, other):
         if not isinstance(other, Matrix):
             raise TypeError
-        if len(other) is not len(self):
+        if len(other) != len(self):
             raise MatrixSizeError
         else:
             res = []
@@ -71,11 +66,11 @@ class Matrix:
             return Matrix(value=res)
 
     def fillwith(self, value):
-        self.__matrix = [[value for _ in range(len(self))] for _  in range(len(self))]
+        self.__matrix = ((value for _ in range(len(self))) for _  in range(len(self)))
 
     def transpose(self):
         transposed = [[lst[i] for lst in self.__matrix] for i in range(len(self))]
-        return Matrix(value=transposed)
+        return Matrix(transposed)
 
     @staticmethod
     def getDet(mat):
@@ -105,3 +100,32 @@ class Matrix:
             minor.append(lst)
         return minor
 
+
+class LinearSystemSolver:
+
+    @staticmethod
+    def getResult(mat: Matrix, res: list):
+        mainDet = float(Matrix.getDet(mat))
+        if mainDet != 0:
+            resList = []
+            for i in range(len(mat)):
+                print(mat)
+                newMat = LinearSystemSolver._changeColMatr(mat, res, i)
+                # print(newMat)
+                print(Matrix.getDet(newMat))
+                resList.append(float(Matrix.getDet(newMat))/mainDet)
+            return resList
+        return None
+
+    @staticmethod
+    def _changeColMatr(mat: Matrix, col, index):
+        toLst = copy(mat).toList()
+        for i in range(len(toLst)):
+            toLst[i][index] = col[i]
+        return Matrix(value=toLst)
+
+
+test = Matrix(((506, 66), (66, 11)))
+res = [2315.1, 392.3]
+
+print(LinearSystemSolver.getResult(test, res))
