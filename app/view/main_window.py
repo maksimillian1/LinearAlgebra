@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget, QDesktopWidget, QButtonGroup
 from app.view.matrix_window import MatrixWindow
+from app.view.system_window import LinearSystemWindow
 from app.view.QtFeatures import moveCenter
 
 
@@ -39,6 +40,9 @@ class MainWindow(QWidget):
             pass
         elif id == 1:
             self.choice = MatrixWindow()
+            self.choice.show()
+        elif id == 2:
+            self.choice = LinearSystemWindow()
             self.choice.show()
         self.close()
 
