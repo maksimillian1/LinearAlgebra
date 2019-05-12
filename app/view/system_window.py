@@ -42,15 +42,30 @@ class LinearSystemWindow(QWidget):
             for i in reversed(range(self.valuesGrid.count())):
                 self.valuesGrid.itemAt(i).widget().setParent(None)
 
-        pos = [(x, y) for x in range(int(size)) for y in range(int(size)+1)]
-        for i, ps in zip(range((int(size)+1)*int(size)), pos):
-            line = QLineEdit()
-            line.setFixedSize(50, 35)
-            self.valuesGrid.addWidget(line, *ps)
-            if (i+1) % (int(size)+1) == 0:
-                self.equalField.append(line)
-            else:
-                self.fields.append(line)
+        rawWidgect = self.generateRaw(size)
+        pos = [(x, y) for x in range(int(size)) for y in range(int(len(rawWidgect)/int(size)))]
+        for wg, i, ps in zip(rawWidgect, range((len(rawWidgect))), pos):
+            if isinstance(wg, QLineEdit):
+                if wg.placeholderText() == 'y':
+                    self.equalField.append(wg)
+                self.fields.append(wg)
+            self.valuesGrid.addWidget(wg, *ps)
+        print(self.equalField)
+        print(self.fields)
+
+
+    def generateRaw(self, size):
+        labels = []
+        for i in range(int(size)):
+            for i in range(0, int(size)):
+                labels.append(QLineEdit())
+                labels.append(QLabel("x{}".format(i+1)))
+            labels.append(QLabel("="))
+            y = QLineEdit()
+            y.setPlaceholderText('y')
+            labels.append(y)
+        return labels
+
 
     def clickedSolve(self):
         systemSize = int(self.sizeBox.currentText())
@@ -65,6 +80,7 @@ class LinearSystemWindow(QWidget):
                     tmp.append(int(self.fields[index].text()))
                     index +=1
                 mat.append(tmp)
+
             res = LinearSystemSolver.getResult(Matrix(mat), vals)
             self.resLabel.setText(self._renderResult(res))
         except ValueError:
