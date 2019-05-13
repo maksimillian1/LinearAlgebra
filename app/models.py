@@ -28,7 +28,7 @@ class Matrix:
     def __getitem__(self, item):
         if isinstance(item, int):
             return self.__matrix[item]
-        elif isinstance(item, list):
+        elif isinstance(item, tuple):
             if len(item) == 2:
                 return self.__matrix[item[0]][item[1]]
         else:
@@ -124,3 +124,9 @@ class LinearSystemSolver:
 
 class Vector:
     pass
+
+l = [[9]]
+
+a = Matrix(l)
+
+print(a[0,0])

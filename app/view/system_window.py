@@ -66,7 +66,6 @@ class LinearSystemWindow(QWidget):
             labels.append(y)
         return labels
 
-
     def clickedSolve(self):
         systemSize = int(self.sizeBox.currentText())
         mat = []

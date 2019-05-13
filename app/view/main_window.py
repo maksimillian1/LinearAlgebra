@@ -12,10 +12,9 @@ class MainWindow(QWidget):
 
         self.defaultSize = (300, 150)
         self.vbox = QVBoxLayout()
-        self.vector = QPushButton('Vectors')
         self.matrix = QPushButton('Matrix Calc')
         self.system = QPushButton('Linear systems')
-        self.btns = ((0, self.vector), (1, self.matrix), (2, self.system))
+        self.btns = ((1, self.matrix), (2, self.system))
         self.btnGroup = QButtonGroup()
         self.choice = None
         self.initUI()
@@ -35,10 +34,7 @@ class MainWindow(QWidget):
 
 
     def buttonsClicked(self, id):
-        print(id)
-        if id == 0:
-            pass
-        elif id == 1:
+        if id == 1:
             self.choice = MatrixWindow()
             self.choice.show()
         elif id == 2:
